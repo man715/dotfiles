@@ -1,0 +1,29 @@
+---
+ title: "General Security Audit"
+ author: "Author: Arron Patton"
+ date:
+ subtitle: "2021 Cybersecurity Framework And Active Directory Audit"
+ geometry: "left=2cm,right=2cm,top=2in,bottom=2.1cm"
+ titlepage: true
+ titlepage-color: "ffffff"
+ titlepage-text-color: "000000"
+ titlepage-rule-height: 0
+ logo: "logo.png"
+ logo-width: 4in
+ page-background:
+ page-background-opacity:
+ links-as-notes: true
+ toc-own-page: false
+ lof: true
+ lot: true
+ lof-own-page: true
+ lot-own-page: false
+ listings-disable-line-numbers: true
+ listings-no-page-break: false
+ disable-header-and-footer: true
+ subparagraph: true
+ lang: en-US 
+ letterhead: header.png
+ footerhead: footer.png
+ pdfa: true
+---
