@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+# Assign the first argument to the name variable
+name=$1
+
+# This will shift the arguments to where $1 becomes $0 and $2 becomes $1 etc
+shift
+
+# Execute the docker command 
+exec docker run -it --rm --hostname "$name" --name "$name" "$name" "$@"

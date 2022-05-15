@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Add local executables directory in $PATH
+if [ -d "$HOME/.local/bin" ]; then 
+    export PATH=$HOME/.local/bin:$PATH
+fi
+
+# Add Appimages directory to $PATH
+if [ -d "$HOME/.local/appimages" ]; then
+    export PATH=$HOME/.local/appimages:$PATH
+fi
+
+# Add pyenv to $PATH
+if [ -n "$PYENV_ROOT" ]; then
+    export PATH=$PYENV_ROOT/bin:$PATH
+fi
+
+# Add go to $Path
+if [ -d "/usr/local/go/bin" ]; then
+    export PATH=/usr/local/go/bin:$PATH
+fi

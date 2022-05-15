@@ -1,0 +1,15 @@
+# `o` with no arguments opens the current directory, otherwise opens the given
+# location
+o() {
+	if [ $# -eq 0 ]; then
+		xdg-open .	> /dev/null 2>&1
+	else
+		xdg-open "$@" > /dev/null 2>&1
+	fi
+}
+
+# Create a new directory and enter it
+mkd() {
+    mkdir "$@"
+    cd "$@" || exit
+}

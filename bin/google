@@ -1,0 +1,2 @@
+#!/bin/sh
+exec lynx "https://www.google.com/search?q=$*"

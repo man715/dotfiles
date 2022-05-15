@@ -1,0 +1,115 @@
+#!/bin/zsh
+# Initial Install
+sudo apt upgrade -y
+sudo apt install -y wget curl llvm git vim
+sudo apt-get install -y --no-install-recommends make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev cmake libtool
+
+# Setup Config files
+echo "[*] Getting config files for zsh, bash, and vim"
+wget https://raw.githubusercontent.com/man715/linux_configs/main/.tmux.conf -O ~/.tmux.conf
+wget https://raw.githubusercontent.com/man715/linux_configs/main/bash.bashrc -O ~/.bashrc
+wget https://raw.githubusercontent.com/man715/linux_configs/main/.zshrc -O ~/.zshrc
+source ~/.zshrc
+wget https://raw.githubusercontent.com/man715/linux_configs/main/.vimrc -O ~/.vimrc
+
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+# Install tmux and vim plugin managers
+sudo apt install -y tmux
+echo "[*] Installing tmux and vim plugin managers"
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+echo "[!]You will need to open vim and run :PlugInstall!"
+
+# Installing Dependencies
+echo "[*] Install dependencies"
+sudo apt install -y gcc bzip2 sqlite  tk-dev libffi-dev 
+sudo apt install -y snapd
+sudo snap install solc
+sudo apt install -y perl make automake gcc 
+
+# Install RDP
+sudo apt install -y xrdp
+sudo systemctl enable xrdp
+sudo systemctl start xrdp
+
+echo "[*] Download the pyenv script and run it"
+sudo curl https://pyenv.run | zsh
+source ~/.zshrc
+echo "[*] PyEnv is installed"
+echo "[*] Go here for some simple usage instructions:"
+echo "[~] https://www.kali.org/docs/general-use/using-eol-python-versions/"
+echo "[~] https://github.com/pyenv/pyenv"
+
+echo "[*] Install python 3.9.4"
+pyenv install -v 3.9.4
+
+# Install Python Modules
+echo "[*] Install python modules"
+/home/"$USER"/.pyenv/bin/pyenv global 3.9.4
+/home/"$USER"/.pyenv/versions/3.9.4/bin/pip install pipx --user
+/home/"$USER"/.local/bin/pipx install eth-brownie
+/home/"$USER"/.pyenv/versions/3.9.4/bin/pip install web3
+
+# Installing Tools
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm' >> ~/.zshrc
+echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+source ~/.zshrc
+nvm install --lts
+npm install -g truffle
+npm install -g ganache
+
+# Install Web3 Audit Tools
+pip install mythril
+pip install slither-analyzer
+pip install "manticore[native]==0.3.5" # https://github.com/crytic/etheno/issues/80
+pip install etheno
+pip install echidna
+pip install solc-select
+
+# Install ZSH QoL 
+curl -fsSL https://download.opensuse.org/repositories/shells:zsh-users:zsh-autosuggestions/xUbuntu_20.10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_zsh-users_zsh-autosuggestions.gpg > /dev/null
+curl -fsSL https://download.opensuse.org/repositories/shells:zsh-users:zsh-syntax-highlighting/xUbuntu_20.10/Release.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/shells_zsh-users_zsh-syntax-highlighting.gpg > /dev/null
+sudo apt update
+sudo apt install zsh-syntax-highlighting
+sudo apt install zsh-autosuggestions
+
+# Install VSCode
+echo "[*] Adding VS Code Repo"
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
+
+echo "[*] Installing VS Code"
+sudo apt install apt-transport-https
+sudo apt update
+sudo apt install -y code
+
+# Install VS Code Extensions
+code --install-extension hookyqr.beautify
+code --install-extension tintinweb.vscode-decompiler
+code --install-extension tintinweb.vscode-ethover
+code --install-extension xabikos.javascriptsnippets
+code --install-extension zainchen.json
+code --install-extension juanblanco.solidity
+code --install-extension tintinweb.vscode-solidity-flattener
+code --install-extension tintinweb.vscode-solidity-language
+code --install-extension tintinweb.solidity-metrics
+code --install-extension tintinweb.solidity-visual-auditor
+
+# Install Echidna
+
+## Haskell Tool Stack
+curl -sSL https://get.haskellstack.org/ | sh
+git clone https://github.com/crytic/echidna.git
+cd echidna
+.github/scripts/install-libff.sh
+.github/scripts/installlibsecp256k1.sh
+export LD_LIBRARY_PATH=/home/man715/.local/lib 
+stack install --extra-lib-dirs=/home/$USER/.local/lib --extra-include-dirs=/home/$USER/.local/include
+cd -
+rm -rf ./echidna/
+

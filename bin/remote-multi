@@ -1,0 +1,15 @@
+#!/bin/sh
+server=$1
+if [ ! "$#" -gt 0 ]; then
+    echo "[!] Usage: $0 <server/ip> [<username>]"
+    exit
+fi
+
+if [ "$#" -gt 1 ]; then
+    user=$2
+    echo "Starting RDP session to $server with user: $user"
+    # the setsid forces the program to run as its own process group allowing you to close the terminal without an issue
+    setsid -f xfreerdp /monitors:0,2 /multimon /v:"$server" /u:"$user" +clipboard
+else 
+    setsid -f xfreerdp /monitors:0,2 /multimon /v:"$server" +clipboard
+fi
