@@ -9,6 +9,10 @@ dotfiles: # Installs the the dotfiles
 		f=$$(basename $$file); \
 		ln -sfn $$file $(HOME)/$$f; \
 	done;
+	if [[ ! -d .local/share/konsole ]]; then \
+		mkdir -p $(HOME)/.local/share/konsole; \
+	fi; \
+	ln -fn ./konsole/main.profile $(HOME)/.local/share/konsole/main.profile
 
 .PHONY: scripts
 scripts: # Installs the scripts in .local/bin
@@ -22,6 +26,15 @@ scripts: # Installs the scripts in .local/bin
 		f=$$(basename $$file); \
 		ln -sf $$file ~/.local/bin/$$f; \
 	done	
+
+.PHONY: lynx
+lynx: 
+	if [[ ! -d ~/.config ]]; then \
+		mkdir -p ~/.config; \
+	fi;
+	rm -rf ~/.config/lynx 2>/dev/null
+	ln -s "$$PWD" "$$HOME/.config/lynx"
+	ls -l ~/.config/lynx
 
 .PHONY: test
 test: shellcheck ## Runs all the tests on the files in the repository.

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Comes from https://github.com/rwxrob/dot/blob/main/scripts/duck
 exec lynx "https://lite.duckduckgo.com/lite?kd=-1&kp=-1&q=$*"
