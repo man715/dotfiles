@@ -148,7 +148,7 @@ base() {
 	sudo ln -s /usr/bin/python3 /usr/bin/python
 	
 	# create apt sandbox user
-	sudo adduser _apt --force-badname
+	sudo useradd -r _apt --force-badname
 	
 	install_scripts
 }
