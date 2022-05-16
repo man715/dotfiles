@@ -148,7 +148,7 @@ base() {
 	sudo ln -s /usr/bin/python3 /usr/bin/python
 	
 	# create apt sandbox user
-	sudo useradd -r _apt --force-badname
+	sudo useradd --system "_apt" --force-badname
 	
 	install_scripts
 }
@@ -163,7 +163,7 @@ install_scripts() {
 	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
 	chmod +x /usr/local/bin/lolcat
 
-    if [[ -z ~/dotfiles ]]; then
+    if [[ ! -z ~/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git $HOME/dotfiles
     fi
     cd ~/dotfiles
@@ -181,8 +181,6 @@ setup_sudo() {
 	gpasswd -a "$TARGET_USER" systemd-journal
 	gpasswd -a "$TARGET_USER" systemd-network
 
-	# create docker group
-	sudo groupadd docker
 	sudo gpasswd -a "$TARGET_USER" docker
 
 	# add go path to secure path
