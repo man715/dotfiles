@@ -164,6 +164,7 @@ install_scripts() {
 	chmod +x /usr/local/bin/lolcat
 
     if [[ -z ~/dotfiles ]]; then
+		mkdir $HOME/dotfiles
         git clone git@github.com:man715/dotfiles.git
     fi
     cd ~/dotfiles
