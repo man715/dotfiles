@@ -55,6 +55,11 @@ install_chrome() {
 }
 
 base() {
+	if [[ ! $(id -u $TARGET_USER) ]]; then
+		echo "The user $TARGET_USER does not exist"
+		useradd $TARGET_USER
+		passwd $TARGET_USER
+	fi
 	# Prep Docker installation
 	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 	echo \
@@ -115,7 +120,6 @@ base() {
 		net-tools \
 		pcscd \
 		pinentry-curses \
-		plasma-desktop
 		policykit-1 \
 		python3 \
 		python3-pip \
