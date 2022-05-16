@@ -165,7 +165,7 @@ install_scripts() {
 
     if [[ -z ~/dotfiles ]]; then
 		mkdir $HOME/dotfiles
-        git clone git@github.com:man715/dotfiles.git
+        git clone git@github.com:man715/dotfiles.git $HOME/dotfiles
     fi
     cd ~/dotfiles
     make scripts
