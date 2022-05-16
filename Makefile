@@ -27,7 +27,7 @@ scripts: # Installs the scripts in .local/bin
 		mkdir -p ~/.local/bin; \
 	fi;
 
-	for file in $(shell find $(CURDIR)/bin -type f -not -name "*-backlight" -not -name ".*.swp"); do \
+	for file in $(shell find $(CURDIR)/bin -type f -not -name ".*.swp"); do \
 		f=$$(basename $$file); \
 		ln -sf $$file ~/.local/bin/$$f; \
 	done	
