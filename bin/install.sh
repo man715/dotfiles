@@ -73,13 +73,13 @@ base() {
 		bzip2 \
 		ca-certificates \
 		cgroupfs-mount \
+		containerd.io \
 		coreutils \
 		curl \
 		dnsutils \
 		docker-ce \
 		docker-ce-cli \
 		dolphin \
-		containerd.io \
 		docker-compose-plugin \
 		file \
 		findutils \
