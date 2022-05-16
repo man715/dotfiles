@@ -357,14 +357,14 @@ main() {
 	local cmd=$1
 
 	case cmd in 
-		base)
+		"base")
 			check_is_sudo
 			get_user
 			setup_sources
 			base
 			;;
 		
-		graphics)
+		"graphics")
 			check_is_sudo
 			if [[ -z "$2" ]]; then
 				echo "Please specify which graphics to install."
@@ -374,40 +374,40 @@ main() {
 			install_graphics "$2"
 			;;
 
-		desktop)
+		"desktop")
 			check_is_sudo
 			install_desktop
 			;;
 
-		dotfiles)
+		"dotfiles")
 			get_user
 			install_dotfiles
 			;;
 			
-		vim)
+		"vim")
 			install_vim
 			;;
 		
-		scripts)
+		"scripts")
 			install_scripts
 			;;
 		
-		rdp)
+		"rdp")
 			check_is_sudo
 			install_rdp
 			;;
 			
-		pyenv)
+		"pyenv")
 			check_is_sudo
 			install_pyenv
 			;;	
 		
-		web3)
+		"web3")
 			check_is_sudo
 			web3
 			;;
 		
-		tmux)
+		"tmux")
 			check_is_sudo
 			install_tmux
 			;;
