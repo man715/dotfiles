@@ -131,8 +131,7 @@ base() {
 		unzip \
 		vim \
 		xz-utils \
-		zip \		
-		--no-install-recommends
+		zip --no-install-recommends
 
 	apt autoremove -y
 	apt autoclean -y
