@@ -417,6 +417,9 @@ main() {
 			install_tmux
 			;;
 		
+		"chrome")
+			check_is_sudo
+			install_chrome
 		*)
 			usage
 			exit 1
