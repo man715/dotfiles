@@ -54,7 +54,7 @@ install_chrome() {
 	sudo wget https://raw.githubusercontent.com/jfrazelle/dotfiles/master/etc/docker/seccomp/chrome.json -O /etc/docker/seccomp/chrome.json
 }
 
-base_min() {
+base() {
 	# Prep Docker installation
 	curl -fsSL https://download.docker.com/linux/debian/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
 	echo \
