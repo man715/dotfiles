@@ -270,7 +270,7 @@ install_vim() {
 }
 
 install_dotfiles() {
-    if [[ -z $TARGET_USER/dotfiles ]]; then
+    if [[ ! -z $TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
     fi
     cd ~/dotfiles
