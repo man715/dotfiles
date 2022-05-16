@@ -356,7 +356,7 @@ usage() {
 main() {
 	local cmd=$1
 
-	case cmd in 
+	case $cmd in 
 		"base")
 			check_is_sudo
 			get_user
