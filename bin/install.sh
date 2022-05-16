@@ -420,6 +420,7 @@ main() {
 		"chrome")
 			check_is_sudo
 			install_chrome
+			;;
 		*)
 			usage
 			exit 1
