@@ -163,8 +163,8 @@ install_scripts() {
 	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
 	chmod +x /usr/local/bin/lolcat
 
-    if [[ ! -z ~/dotfiles ]]; then
-        git clone git@github.com:man715/dotfiles.git $HOME/dotfiles
+    if [[ ! -z /home/$TARGET_USER/dotfiles ]]; then
+		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
     fi
     cd ~/dotfiles
     make scripts
@@ -268,10 +268,10 @@ install_vim() {
 }
 
 install_dotfiles() {
-    if [[ ! -z $TARGET_USER/dotfiles ]]; then
+    if [[ ! -z /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
     fi
-    cd ~/dotfiles
+    cd /home/$TARGET_USER/dotfiles
     make dotfiles
 }
 
