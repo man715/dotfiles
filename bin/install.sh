@@ -115,6 +115,7 @@ base() {
 		net-tools \
 		pcscd \
 		pinentry-curses \
+		plasma-desktop
 		policykit-1 \
 		python3 \
 		python3-pip \
