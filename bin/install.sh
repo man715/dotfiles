@@ -340,6 +340,19 @@ install_pyenv() {
 	/home/"$USER"/.pyenv/versions/3.9.4/bin/pip install web3
 }
 
+usage() {
+	echo -e "install.sh\\n\\tThis script installs my basic setup for a debian laptop\\n"
+	echo "Usage:"
+	echo "  base                                      - setup sources & install base pkgs"
+	echo "  graphics {amd, intel, geforce, optimus,}  - install graphics drivers"
+	echo "  wm                                        - install window manager/desktop pkgs"
+	echo "  dotfiles                                  - get dotfiles"
+	echo "  vim                                       - install vim specific dotfiles"
+	echo "  pyenv                                     - install pyenv"
+	echo "  tmux                                      - install tmux"
+	echo "  scripts                                   - install scripts"
+}
+
 main() {
 	local cmd=$1
 
@@ -402,6 +415,8 @@ main() {
 		*)
 			usage
 			exit 1
+			;;
+		esac
 		
 }
 
