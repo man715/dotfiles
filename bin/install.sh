@@ -119,6 +119,7 @@ base() {
 		mount \
 		net-tools \
 		pcscd \
+		plasma-desktop \
 		pinentry-curses \
 		policykit-1 \
 		python3 \
