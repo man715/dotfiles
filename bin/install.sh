@@ -157,6 +157,13 @@ install_scripts() {
 		# install lolcat
 	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
 	chmod +x /usr/local/bin/lolcat
+
+    if [[ -z ~/dotfiles ]]; then
+        git clone git@github.com:man715/dotfiles.git
+    fi
+    cd ~/dotfiles
+    make scripts
+
 }
 
 # Setup sudo for a user
@@ -258,15 +265,11 @@ install_vim() {
 }
 
 install_dotfiles() {
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.tmux.conf -O ~/.tmux.conf
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.bashrc -O ~/.bashrc
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.bash_prompt -O ~/.bash_prompt
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.aliases -O ~/.aliases
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.dockerfunc -O ~/.dockerfunc
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.exports -O ~/.exports
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.extra -O ~/.extra
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.functions -O ~/.functions
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.path -O ~/.path
+    if [[ -z ~/dotfiles ]]; then
+        git clone git@github.com:man715/dotfiles.git ~/dotfiles
+    fi
+    cd ~/dotfiles
+    make dotfiles
 }
 
 web3() {
@@ -376,9 +379,6 @@ main() {
 			install_scripts
 			;;
 		
-		tools)
-			install_tools
-			;;
 		rdp)
 			check_is_sudo
 			install_rdp
