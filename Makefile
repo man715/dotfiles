@@ -9,10 +9,15 @@ dotfiles: # Installs the the dotfiles
 		f=$$(basename $$file); \
 		ln -sfn $$file $(HOME)/$$f; \
 	done;
-	if [[ ! -d .local/share/konsole ]]; then \
+	if [[ ! -d $(HOME)/.local/share/konsole ]]; then \
 		mkdir -p $(HOME)/.local/share/konsole; \
-	fi; \
+	fi; 
+	if [[ ! -d $(HOME)/.kde/share/config ]]; then \
+		mkdir -p $(HOME)/.kde/share/config; \
+	fi;
+
 	ln -fn ./konsole/main.profile $(HOME)/.local/share/konsole/main.profile
+	ln -fn ./kde/kdeglobals $(HOME)/.kde/share/config/kdeglobals
 
 .PHONY: scripts
 scripts: # Installs the scripts in .local/bin
