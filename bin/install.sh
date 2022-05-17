@@ -9,8 +9,14 @@ export DEBIAN_FRONTEND=noninteractive
 # Choose a user account to use for the installation
 # use export TARGET_USER=<username>
 get_user() {
-	if [[ -z "${TARGET_USER-}" ]]; then
+	if [[ -z "${TARGET_USER}" ]]; then
 		mapfile -t options < <(find /home/* -maxdepth 0 -printf "%f\\n" -type d)
+
+		if [[ -z "${TARGER_USER}" ]]; then
+			echo "Please create a user or use the TARGET_USER variable"
+			exit 1
+		fi
+
 		# if there is only one option just use that user
 		if [ "${#options[@]}" -eq "1" ]; then
 			readonly TARGET_USER="${options[0]}"
@@ -136,6 +142,10 @@ base() {
 		tzdata \
 		unzip \
 		vim \
+		xorg \
+		xorg-server-xorg \
+		xserver-xorg-input-libinput \
+		xserver-xorg-input-synaptics\
 		xz-utils \
 		zip --no-install-recommends
 
@@ -166,7 +176,7 @@ install_scripts() {
     if [[ ! -z /home/$TARGET_USER/dotfiles ]]; then
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
     fi
-    cd ~/dotfiles
+    cd /home/$TARGET_USER/dotfiles
     make scripts
 
 }
@@ -251,8 +261,8 @@ install_tmux() {
 		tmux
 		--no-install-recommends
 	
-	git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.tmux.conf -O ~/.tmux.conf
+	git clone https://github.com/tmux-plugins/tpm /home/$TARGET_USER/.tmux/plugins/tpm
+	wget https://raw.githubusercontent.com/man715/linux_configs/main/.tmux.conf -O /home/$TARGET_USER/.tmux.conf
 }
 
 # Install vim
@@ -261,8 +271,8 @@ install_vim() {
 	sudo apt install -y \
 		vim \
 		--no-install-recommends
-	curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-	wget https://raw.githubusercontent.com/man715/linux_configs/main/.vimrc -O ~/.vimrc
+	curl -fLo /home/$TARGET_USER/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+	wget https://raw.githubusercontent.com/man715/linux_configs/main/.vimrc -O /home/$TARGET_USER/.vimrc
 	echo "[*] Open vim and run 'PlugInstall'"
 
 }
@@ -322,7 +332,7 @@ install_rdp() {
 install_pyenv() {
 	echo "[*] Download the pyenv script and run it"
 	sudo curl https://pyenv.run | zsh
-	source ~/.zshrc
+	source /home/$TARGET_USER/.bashrc
 	echo "[*] PyEnv is installed"
 	echo "[*] Go here for some simple usage instructions:"
 	echo "[~] https://github.com/pyenv/pyenv"
