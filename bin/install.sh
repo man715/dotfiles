@@ -44,19 +44,7 @@ check_is_sudo() {
 
 
 setup_sources() {
-	apt install -y \
-		systemd-timesyncd --no-install-recommends
-	apt install -y \
-		ntp --no-install-recommends
-		
-	apt update
-	apt install -y \
-		apt-transport-https \
-		ca-certificates \
-		curl \
-		dirmngr \
-		gnupg2 \
-		lsb-release --no-install-recommends
+	
 }
 
 install_chrome() {
@@ -387,7 +375,6 @@ main() {
 		"base")
 			check_is_sudo
 			get_user
-			setup_sources
 			base
 			;;
 		
