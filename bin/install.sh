@@ -45,9 +45,9 @@ check_is_sudo() {
 
 setup_sources() {
 	apt install -y \
-		systemd-timesyncd
+		systemd-timesyncd --no-install-recommends
 	apt install -y \
-		ntp \
+		ntp --no-install-recommends
 		
 	apt update
 	apt install -y \
