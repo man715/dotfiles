@@ -275,6 +275,7 @@ install_graphics() {
 install_desktop() {
 	apt update
 	apt -y upgrade
+	
 	apt install -y \
 		xorg \
 		xserver-xorg \
