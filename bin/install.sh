@@ -155,7 +155,9 @@ base() {
 
 	setup_sudo
 
-	sudo ln -s /usr/bin/python3 /usr/bin/python
+	if [[ -z /usr/bin/python ]]; then
+		sudo ln -s /usr/bin/python3 /usr/bin/python
+	fi
 	
 	# create apt sandbox user
 	sudo useradd --system "_apt"
@@ -173,8 +175,9 @@ install_scripts() {
 	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
 	chmod +x /usr/local/bin/lolcat
 
-    if [[ ! -z /home/$TARGET_USER/dotfiles ]]; then
+    if [[ -z /home/$TARGET_USER/dotfiles ]]; then
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
+		chown -R $TARGER_USER:$TARGER_USER /home/$TARGET_USER/dotfiles
     fi
     cd /home/$TARGET_USER/dotfiles
     make scripts
@@ -278,8 +281,9 @@ install_vim() {
 }
 
 install_dotfiles() {
-    if [[ ! -z /home/$TARGET_USER/dotfiles ]]; then
+    if [[ -z /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
+		chown -R $TARGER_USER:$TARGER_USER /home/$TARGET_USER/dotfiles
     fi
     cd /home/$TARGET_USER/dotfiles
     make dotfiles
