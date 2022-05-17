@@ -292,6 +292,7 @@ install_desktop() {
 
 # Install tmux
 install_tmux() {
+	get_user
 	sudo apt update || true
 	sudo apt install -y \
 		tmux --no-install-recommends
@@ -302,6 +303,7 @@ install_tmux() {
 
 # Install vim
 install_vim() {
+	get_user
 	sudo apt update || true
 	sudo apt install -y \
 		vim --no-install-recommends
