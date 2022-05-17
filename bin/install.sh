@@ -81,8 +81,7 @@ base() {
 		systemd-timesyncd --no-install-recommends
 		
 	apt install -y \
-		ntp \
-		systemd-timesyncd --no-install-recommends
+		ntp --no-install-recommends
 
 	apt update
 	apt -y upgrade
