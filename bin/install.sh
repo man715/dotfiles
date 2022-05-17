@@ -286,7 +286,6 @@ install_vim() {
 }
 
 install_dotfiles() {
-    su  $TARGET_USER
 	if [[ -z /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
