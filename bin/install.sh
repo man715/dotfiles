@@ -167,6 +167,7 @@ base() {
 	fi
 	
 	install_scripts
+	install_dotfiles
 }
 
 # install custom scripts/binaries
