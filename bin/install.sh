@@ -78,7 +78,7 @@ base() {
 	apt -y upgrade
 	apt install -y \
 		xorg \
-		xorg-server-xorg \
+		xserver-xorg \
 		xserver-xorg-input-libinput \
 		xserver-xorg-input-synaptics\
 		xz-utils \
