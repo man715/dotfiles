@@ -162,7 +162,9 @@ base() {
 	fi
 	
 	# create apt sandbox user
-	sudo useradd --system "_apt"
+	if [[ ! $(id -u $TARGET_USER) ]]; then
+		sudo useradd --system "_apt"
+	fi
 	
 	install_scripts
 }
