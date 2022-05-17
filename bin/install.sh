@@ -183,9 +183,9 @@ install_scripts() {
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
-	su $TARGET_USER
     cd /home/$TARGET_USER/dotfiles
     make scripts
+	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
 
 }
 
@@ -286,13 +286,14 @@ install_vim() {
 }
 
 install_dotfiles() {
-    if [[ -z /home/$TARGET_USER/dotfiles ]]; then
+    su  $TARGET_USER
+	if [[ -z /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
-	su -i $TARGET_USER
     cd /home/$TARGET_USER/dotfiles
     make dotfiles
+	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
 }
 
 web3() {
