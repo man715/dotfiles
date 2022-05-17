@@ -169,7 +169,7 @@ base() {
 	setup_sudo
 
 	# Create a symlinc for python
-	if [[ -z /usr/bin/python ]]; then
+	if [[ ! -d /usr/bin/python ]]; then
 		sudo ln -s /usr/bin/python3 /usr/bin/python
 	fi
 	
