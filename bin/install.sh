@@ -273,7 +273,7 @@ install_desktop() {
 		dolphin \
 		kate \
 		konsole \
-		sddm \
+		sddm
 }
 
 # Install tmux
