@@ -56,8 +56,7 @@ setup_sources() {
 		curl \
 		dirmngr \
 		gnupg2 \
-		lsb-release \
-		--no-install-recommends
+		lsb-release --no-install-recommends
 }
 
 install_chrome() {
@@ -84,7 +83,7 @@ base() {
 		
 	apt install -y \
 		ntp \
-		--no-install-recommends
+		systemd-timesyncd --no-install-recommends
 
 	apt update
 	apt -y upgrade
@@ -271,16 +270,14 @@ install_graphics() {
 install_desktop() {
 	sudo apt update || true
 	sudo apt install -y \
-		$1
-		--no-install-recommends
+		$1 --no-install-recommends
 }
 
 # Install tmux
 install_tmux() {
 	sudo apt update || true
 	sudo apt install -y \
-		tmux
-		--no-install-recommends
+		tmux --no-install-recommends
 	
 	git clone https://github.com/tmux-plugins/tpm /home/$TARGET_USER/.tmux/plugins/tpm
 	wget https://raw.githubusercontent.com/man715/linux_configs/main/.tmux.conf -O /home/$TARGET_USER/.tmux.conf
@@ -290,8 +287,7 @@ install_tmux() {
 install_vim() {
 	sudo apt update || true
 	sudo apt install -y \
-		vim \
-		--no-install-recommends
+		vim --no-install-recommends
 	curl -fLo /home/$TARGET_USER/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 	wget https://raw.githubusercontent.com/man715/linux_configs/main/.vimrc -O /home/$TARGET_USER/.vimrc
 	echo "[*] Open vim and run 'PlugInstall'"
@@ -335,8 +331,7 @@ web3() {
 		tk-dev \
 		wget \
 		xz-utils \
-		zlib1g-dev \
-		--no-install-recommends
+		zlib1g-dev --no-install-recommends
 	
 	install_rdp
 	install_pyenv
@@ -344,8 +339,7 @@ web3() {
 
 install_rdp() {
 	sudo apt install -y \
-		xrdp \
-		--no-install-recommends
+		xrdp --no-install-recommends
 		
 	sudo systemctl enable xrdp
 	sudo systemctl start xrdp
