@@ -44,7 +44,10 @@ check_is_sudo() {
 
 
 setup_sources() {
-	apt update || true
+	apt install -y \
+		ntp
+		systemd-timesyncd
+	apt update
 	apt install -y \
 		apt-transport-https \
 		ca-certificates \
