@@ -45,8 +45,10 @@ check_is_sudo() {
 
 setup_sources() {
 	apt install -y \
-		ntp \
 		systemd-timesyncd
+	apt install -y \
+		ntp \
+		
 	apt update
 	apt install -y \
 		apt-transport-https \
