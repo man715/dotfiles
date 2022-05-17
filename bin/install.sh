@@ -85,15 +85,11 @@ base() {
   "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
   $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 	
-
+	# Install Plasma
+	install_desktop
 	apt update
-	apt -y upgrade
+	apt upgrade -y
 	apt install -y \
-		xorg \
-		xserver-xorg \
-		xserver-xorg-input-libinput \
-		xserver-xorg-input-synaptics\
-		xz-utils \
 		adduser \
 		apparmor \
 		automake \
@@ -109,7 +105,6 @@ base() {
 		dnsutils \
 		docker-ce \
 		docker-ce-cli \
-		dolphin \
 		docker-compose-plugin \
 		file \
 		findutils \
@@ -127,8 +122,6 @@ base() {
 		iptables \
 		iwd \
 		jq \
-		kate \
-		konsole \
 		less \
 		libapparmor-dev \
 		libc6-dev \
@@ -144,13 +137,11 @@ base() {
 		mount \
 		net-tools \
 		pcscd \
-		plasma-desktop \
 		pinentry-curses \
 		policykit-1 \
 		python3 \
 		python3-pip \
 		scdaemon \
-		sddm \
 		silversearcher-ag \
 		ssh \
 		strace \
@@ -269,9 +260,20 @@ install_graphics() {
 
 
 install_desktop() {
-	sudo apt update || true
-	sudo apt install -y \
-		$1 --no-install-recommends
+	apt update
+	apt -y upgrade
+	apt install -y
+		xorg \
+		xserver-xorg \
+		xserver-xorg-input-libinput \
+		xserver-xorg-input-synaptics\
+		xz-utils \
+		plasma-desktop \
+		kwin-x11 \
+		dolphin \
+		kate \
+		konsole \
+		sddm \
 }
 
 # Install tmux
