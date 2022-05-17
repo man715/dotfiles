@@ -77,6 +77,11 @@ base() {
 	apt update || true
 	apt -y upgrade
 	apt install -y \
+		xorg \
+		xorg-server-xorg \
+		xserver-xorg-input-libinput \
+		xserver-xorg-input-synaptics\
+		xz-utils \
 		adduser \
 		apparmor \
 		automake \
@@ -144,11 +149,6 @@ base() {
 		tzdata \
 		unzip \
 		vim \
-		xorg \
-		xorg-server-xorg \
-		xserver-xorg-input-libinput \
-		xserver-xorg-input-synaptics\
-		xz-utils \
 		zip --no-install-recommends
 
 	apt autoremove -y
