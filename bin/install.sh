@@ -54,7 +54,7 @@ install_chrome() {
 
 initial() {
 	echo "[*] INSTALLING INITIAL PACKAGES"
-	apt install -y \	
+	apt install -y \
 		systemd-timesyncd --no-install-recommends
 		
 	apt install -y \
