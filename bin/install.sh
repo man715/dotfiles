@@ -44,7 +44,12 @@ check_is_sudo() {
 
 
 setup_sources() {
-	echo "NOTHING TO SEE HERE"	
+	echo "[*] Setting up sources"
+	# Prep Docker installation
+	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+	echo \
+		"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
+		$(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 }
 
 install_chrome() {
@@ -69,9 +74,8 @@ initial() {
 		lsb-release --no-install-recommends
 }
 
-base() {
-	initial
-
+user_exists() {
+	echo "[*] Checking if the user $TARGET_USER exists"
 	if [[ ! $(id -u $TARGET_USER) ]]; then
 		echo "The user $TARGET_USER does not exist"
 		apt update || true 
@@ -79,14 +83,18 @@ base() {
 		adduser $TARGET_USER
 		usermod -s /bin/bash $TARGET_USER
 	fi
-	# Prep Docker installation
-	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-	echo \
-  "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian \
-  $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
-	
+}
+
+base() {
+	initial
+
+	user_exists
+
+	setup_sources
+
 	# Install Plasma
 	install_desktop
+
 	apt update
 	apt upgrade -y
 	apt install -y \
@@ -160,12 +168,14 @@ base() {
 
 	setup_sudo
 
+	# Create a symlinc for python
 	if [[ -z /usr/bin/python ]]; then
 		sudo ln -s /usr/bin/python3 /usr/bin/python
 	fi
 	
 	# create apt sandbox user
 	if [[ ! $(id -u $TARGET_USER) ]]; then
+		echo "[!] Creating the apt sandbox user _apt"
 		sudo useradd --system "_apt"
 	fi
 	
@@ -175,6 +185,7 @@ base() {
 
 # install custom scripts/binaries
 install_scripts() {
+	echo "[*] Installing scripts"
 	# install speedtest
 	curl -sSL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py  > /usr/local/bin/speedtest
 	chmod +x /usr/local/bin/speedtest
@@ -195,6 +206,8 @@ install_scripts() {
 
 # Setup sudo for a user
 setup_sudo() {
+	echo "[*] Setting up sudo permissions for $TARGET_USER"
+
 	# add user to sudoers
 	adduser "$TARGET_USER" sudo
 
@@ -298,6 +311,7 @@ install_vim() {
 }
 
 install_dotfiles() {
+	echo "[*] Installing dot files"
 	if [[ ! -d /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
