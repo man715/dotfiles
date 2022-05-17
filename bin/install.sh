@@ -66,8 +66,7 @@ base() {
 		curl \
 		dirmngr \
 		gnupg2 \
-		lsb-release \
-		--no-install-recommends
+		lsb-release --no-install-recommends
 
 	if [[ ! $(id -u $TARGET_USER) ]]; then
 		echo "The user $TARGET_USER does not exist"
