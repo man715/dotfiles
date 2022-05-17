@@ -63,8 +63,9 @@ install_chrome() {
 base() {
 	if [[ ! $(id -u $TARGET_USER) ]]; then
 		echo "The user $TARGET_USER does not exist"
-		useradd $TARGET_USER
-		passwd $TARGET_USER
+		apt update || true 
+		apt install -y adduser
+		adduser $TARGET_USER
 	fi
 	# Prep Docker installation
 	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
