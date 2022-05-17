@@ -177,8 +177,9 @@ install_scripts() {
 
     if [[ -z /home/$TARGET_USER/dotfiles ]]; then
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
-		chown -R $TARGER_USER:$TARGER_USER /home/$TARGET_USER/dotfiles
+		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
+	su -i $TARGET_USER
     cd /home/$TARGET_USER/dotfiles
     make scripts
 
@@ -283,8 +284,9 @@ install_vim() {
 install_dotfiles() {
     if [[ -z /home/$TARGET_USER/dotfiles ]]; then
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
-		chown -R $TARGER_USER:$TARGER_USER /home/$TARGET_USER/dotfiles
+		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
+	su -i $TARGET_USER
     cd /home/$TARGET_USER/dotfiles
     make dotfiles
 }
