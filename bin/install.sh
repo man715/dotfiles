@@ -44,7 +44,7 @@ check_is_sudo() {
 
 
 setup_sources() {
-	
+	echo "NOTHING TO SEE HERE"	
 }
 
 install_chrome() {
