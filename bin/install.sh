@@ -52,8 +52,8 @@ install_chrome() {
 	sudo wget https://raw.githubusercontent.com/jfrazelle/dotfiles/master/etc/docker/seccomp/chrome.json -O /etc/docker/seccomp/chrome.json
 }
 
-base() {
-
+initial() {
+	echo "[*] INSTALLING INITIAL PACKAGES"
 	apt install -y \	
 		systemd-timesyncd --no-install-recommends
 		
@@ -67,6 +67,10 @@ base() {
 		dirmngr \
 		gnupg2 \
 		lsb-release --no-install-recommends
+}
+
+base() {
+	initial
 
 	if [[ ! $(id -u $TARGET_USER) ]]; then
 		echo "The user $TARGET_USER does not exist"
