@@ -66,6 +66,7 @@ base() {
 		apt update || true 
 		apt install -y adduser
 		adduser $TARGET_USER
+		usermod -s /bin/bash $TARGET_USER
 	fi
 	# Prep Docker installation
 	curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
