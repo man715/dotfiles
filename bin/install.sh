@@ -184,8 +184,8 @@ install_scripts() {
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
-    cd /home/$TARGET_USER/dotfiles
-    make scripts
+	
+    runuser -l $TARGET_USER 'cd $HOME/dotfiles && make scripts' 
 	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
 
 }
@@ -291,8 +291,7 @@ install_dotfiles() {
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
-    cd /home/$TARGET_USER/dotfiles
-    make dotfiles
+    runuser -l $TARGET_USER 'cd $HOME/dotfiles && make dotfiles'
 	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
 }
 
