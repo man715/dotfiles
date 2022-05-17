@@ -12,7 +12,7 @@ get_user() {
 	if [[ -z "${TARGET_USER}" ]]; then
 		mapfile -t options < <(find /home/* -maxdepth 0 -printf "%f\\n" -type d)
 
-		if [[ -z "${TARGET_USER}" ]]; then
+		if [[ -z "${options}" ]]; then
 			echo "Please create a user or use the TARGET_USER variable"
 			exit 1
 		fi
