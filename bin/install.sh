@@ -282,12 +282,12 @@ install_desktop() {
 		xserver-xorg-input-libinput \
 		xserver-xorg-input-synaptics\
 		xz-utils \
-		plasma-desktop \
 		kwin-x11 \
 		dolphin \
 		kate \
 		konsole \
-		sddm
+		sddm \
+		plasma-desktop
 }
 
 # Install tmux
