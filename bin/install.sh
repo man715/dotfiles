@@ -147,6 +147,9 @@ base() {
 		pcscd \
 		pinentry-curses \
 		policykit-1 \
+        pulseaudio \
+        pulseaudio-module-bluetooth \
+        pulsemixer \
 		python3 \
 		python3-pip \
 		scdaemon \
@@ -160,6 +163,7 @@ base() {
 		tzdata \
 		unzip \
 		vim \
+        xclip \
 		zip --no-install-recommends
 
 	apt autoremove -y
