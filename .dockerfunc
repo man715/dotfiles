@@ -106,7 +106,7 @@ chrome(){
 	local map
 	local args=$*
 	if [[ "$1" == "tor" ]]; then
-		relies_on torbridge
+		relies_on torproxy
 
 		map="MAP * ~NOTFOUND , EXCLUDE torproxy"
 		proxy="socks5://torproxy:9050"
@@ -114,17 +114,21 @@ chrome(){
 	fi
 
 	del_stopped chrome
+    USER_ID=$(id -u)
 
 	# one day remove /etc/hosts bind mount when effing
 	# overlay support inotify, such bullshit
 	docker run -d \
 		--memory 3gb \
+        -e PULSE_SERVER=unix:$XDG_RUNTIME_DIR/pulse/native \
+        -v $XDG_RUNTIME_DIR/pulse:$XDG_RUNTIME_DIR/pulse \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-e "DISPLAY=unix${DISPLAY}" \
 		-v "${HOME}/Downloads:/root/Downloads" \
 		-v "${HOME}/Pictures:/root/Pictures" \
 		-v "${HOME}/Torrents:/root/Torrents" \
+		-v "${HOME}/.chrome:/data" \
 		-v /dev/shm:/dev/shm \
 		-v /etc/hosts:/etc/hosts \
 		--security-opt seccomp:/etc/docker/seccomp/chrome.json \
@@ -136,7 +140,7 @@ chrome(){
 		--group-add audio \
 		--group-add video \
 		--name chrome \
-		${DOCKER_REPO_PREFIX}/chrome --user-data-dir=/data \
+		man715/chrome --user-data-dir=/data \
 		--proxy-server="$proxy" \
 		--host-resolver-rules="$map" "$args"
 
@@ -162,7 +166,8 @@ firefox(){
 
 	docker run -d \
 		--memory 2gb \
-		--net host \
+        -e PULSE_SERVER=unix:$XDG_RUNTIME_DIR/pulse/native \
+        -v $XDG_RUNTIME_DIR/pulse:$XDG_RUNTIME_DIR/pulse \
 		--cpuset-cpus 0 \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
@@ -177,10 +182,10 @@ firefox(){
 		--device /dev/snd \
 		--device /dev/dri \
 		--name firefox \
-		${DOCKER_REPO_PREFIX}/firefox "$@"
+		man715/firefox "$@"
 
 	# exit current shell
-	exit 0
+#	exit 0
 }
 dgcloud(){
 	docker run --rm -it \
@@ -437,6 +442,11 @@ pond(){
 		--net container:torproxy \
 		--name pond \
 		${DOCKER_REPO_PREFIX}/pond
+}
+powershell() {
+    docker run --rm -it \
+        --name powershell \
+        mcr.microsoft.com/powershell
 }
 pulseaudio(){
 	del_stopped pulseaudio
