@@ -116,6 +116,7 @@ base() {
 		docker-compose-plugin \
 		file \
 		findutils \
+        flameshot \
 		fwupd \
 		fwupdate \
 		gcc \
@@ -159,6 +160,7 @@ base() {
 		sudo \
 		systemd \
 		tar \
+        timeshift \
 		tree \
 		tzdata \
 		unzip \
