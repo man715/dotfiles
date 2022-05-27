@@ -119,7 +119,7 @@ chrome(){
 	# one day remove /etc/hosts bind mount when effing
 	# overlay support inotify, such bullshit
 	docker run -d \
-		--memory 3gb \
+		--memory 6gb \
         -e PULSE_SERVER=unix:$XDG_RUNTIME_DIR/pulse/native \
         -v $XDG_RUNTIME_DIR/pulse:$XDG_RUNTIME_DIR/pulse \
 		-v /etc/localtime:/etc/localtime:ro \
@@ -472,7 +472,7 @@ remmina(){
 		-v "${HOME}/.remmina:/root/.remmina" \
 		--name remmina \
 		--net host \
-		${DOCKER_REPO_PREFIX}/remmina
+		man715/remmina
 }
 slack(){
 	del_stopped slack
@@ -762,12 +762,12 @@ ykman(){
 	if [[ -n "$(which ykman)" ]]; then
 		"$(which ykman)" "$@"
 	else
-		docker run --rm -it \
+		docker run -it \
 			-v /etc/localtime:/etc/localtime:ro \
 			--device /dev/usb \
 			--device /dev/bus/usb \
 			--name ykman \
-			${DOCKER_REPO_PREFIX}/ykman bash
+			man715/ykman bash
 	fi
 }
 ykpersonalize(){
@@ -776,7 +776,7 @@ ykpersonalize(){
 	if [[ -n "$(which ykpersonalize)" ]]; then
 		"$(which ykpersonalize)" "$@"
 	else
-		docker run --rm -it \
+		docker run -it \
 			-v /etc/localtime:/etc/localtime:ro \
 			--device /dev/usb \
 			--device /dev/bus/usb \
@@ -790,12 +790,12 @@ yubico_piv_tool(){
 	if [[ -n "$(which yubico-piv-tool)" ]]; then
 		"$(which yubico-piv-tool)" "$@"
 	else
-		docker run --rm -it \
+		docker run -it \
 			-v /etc/localtime:/etc/localtime:ro \
 			--device /dev/usb \
 			--device /dev/bus/usb \
 			--name yubico-piv-tool \
-			${DOCKER_REPO_PREFIX}/yubico-piv-tool bash
+			man715/yubico-piv-tool bash
 	fi
 }
 alias yubico-piv-tool="yubico_piv_tool"
