@@ -42,6 +42,13 @@ check_is_sudo() {
 	fi
 }
 
+install_obsidian() {
+    wget https://github.com/TheAssassin/AppImageLauncher/releases/download/v2.2.0/appimagelauncher_2.2.0-travis995.0f91801.bionic_amd64.deb
+    apt install -y ./appimagelauncher_2.2.0-travis995.0f91801.bionic_amd64.deb
+
+    mkdir /home/$TARGET_USER/Applications
+    wget https://github.com/obsidianmd/obsidian-releases/releases/download/v0.14.6/Obsidian-0.14.6.AppImage -O /home/$TARGET_USER/Appliations/Obsidian-0.14.6.AppImage
+}
 
 setup_sources() {
 	echo "[*] Setting up sources"
