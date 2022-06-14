@@ -18,6 +18,7 @@ set showmatch               " highlight matching parens and brackets
 set laststatus=2            " always show statusline
 set ruler                   " show line and column number of the cursor on right side of statusline
 
+au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " Jump to the last position when reopening
 
 """""Tab/indent settings
 set autoindent          " copy indent from current line when starting a new line

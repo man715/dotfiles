@@ -125,9 +125,9 @@ chrome(){
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
 		-e "DISPLAY=unix${DISPLAY}" \
-		-v "${HOME}/Downloads:/root/Downloads" \
-		-v "${HOME}/Pictures:/root/Pictures" \
-		-v "${HOME}/Torrents:/root/Torrents" \
+		-v "${HOME}/Downloads:/home/chrome/Downloads" \
+		-v "${HOME}/Pictures:/home/chrome/Pictures" \
+		-v "${HOME}/Torrents:/home/chrome/Torrents" \
 		-v "${HOME}/.chrome:/data" \
 		-v /dev/shm:/dev/shm \
 		-v /etc/hosts:/etc/hosts \
@@ -636,10 +636,11 @@ virtualbox(){
 	docker run -d \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix \
+        -v $HOME/Downloads:/iso \
 		-e "DISPLAY=unix${DISPLAY}" \
 		--privileged \
 		--name virtualbox \
-		${DOCKER_REPO_PREFIX}/virtualbox
+		man715/vbox
 }
 virt_viewer(){
 	relies_on kvm
@@ -660,12 +661,17 @@ visualstudio(){
 	del_stopped visualstudio
 
 	docker run -d \
+        -v $PWD:/code \
 		-v /etc/localtime:/etc/localtime:ro \
 		-v /tmp/.X11-unix:/tmp/.X11-unix  \
+        --security-opt seccomp:/etc/docker/seccomp/chrome.json \
 		-e "DISPLAY=unix${DISPLAY}" \
 		--device /dev/dri \
+        --device /dev/snd \
 		--name visualstudio \
-		${DOCKER_REPO_PREFIX}/vscode
+        --group-add video \
+        --group-add audio \
+		man715/vscode
 }
 alias vscode="visualstudio"
 vlc(){
