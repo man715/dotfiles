@@ -380,7 +380,7 @@ install_rdp() {
 
 install_pyenv() {
 	echo "[*] Download the pyenv script and run it"
-	sudo curl https://pyenv.run | zsh
+	sudo curl https://pyenv.run | sh
 	source /home/$TARGET_USER/.bashrc
 	echo "[*] PyEnv is installed"
 	echo "[*] Go here for some simple usage instructions:"
