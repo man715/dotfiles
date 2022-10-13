@@ -259,7 +259,7 @@ libreoffice(){
 		-e GDK_SCALE \
 		-e GDK_DPI_SCALE \
 		--name libreoffice \
-		${DOCKER_REPO_PREFIX}/libreoffice
+		man715/libreoffice
 }
 lpass(){
 	docker run --rm -it \

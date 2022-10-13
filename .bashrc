@@ -129,3 +129,5 @@ export PATH="$PATH:/home/arronp/.foundry/bin"
 . "$HOME/.cargo/env"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+neofetch
