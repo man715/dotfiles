@@ -10,8 +10,6 @@ map <F9> :set relativenumber!<CR>
 map <F7> :set spell!<CR>
 map <F12> :set fdm=indent<CR>
 
-map <C-p> :FZF<CR>
-
 "Basic behavior
 set number                  " turn on line numbers
 set encoding=UTF8       
@@ -20,7 +18,6 @@ set showmatch               " highlight matching parens and brackets
 set laststatus=2            " always show statusline
 set ruler                   " show line and column number of the cursor on right side of statusline
 
-au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif " Jump to the last position when reopening
 
 """""Tab/indent settings
 set autoindent          " copy indent from current line when starting a new line
@@ -51,7 +48,6 @@ call plug#begin('~/.vim/plugged')
     Plug 'rwxrob/vim-pandoc-syntax-simple'
     Plug 'tmsvg/pear-tree'
     Plug 'cespare/vim-toml'
-    Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 call plug#end()
 
 " netrw Configs
@@ -124,12 +120,3 @@ if v:version >= 800
     set listchars=space:*,trail:*,nbsp:*,extends:>,precedes:<,tab:\|>
 endif
 
-" Splits
-set splitbelow splitright
-
-noremap <silent> <C-Left> :vertical resize +3<CR>
-noremap <silent> <C-Right> :vertical resize -3<CR>
-noremap <silent> <C-Up> :resize +3<CR>
-noremap <silent> <C-Down> :resize -3<CR>
-map <Leader>th <C-w>t<C-w>H
-map <Leader>tk <C-w>t<C-w>K

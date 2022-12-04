@@ -130,4 +130,6 @@ export PATH="$PATH:/home/arronp/.foundry/bin"
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
+[ -f ${HOME}/.config/user-dirs.dirs] && source ${HOME}/.config/user-dirs.dirs
+
 neofetch
