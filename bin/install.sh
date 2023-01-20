@@ -2,7 +2,7 @@
 set -e
 
 # Return the exit code of the right most command
-set -o pipefail
+#set -o pipefail
 
 export DEBIAN_FRONTEND=noninteractive
 
@@ -201,22 +201,16 @@ base() {
 
 # install custom scripts/binaries
 install_scripts() {
+    get_user
 	echo "[*] Installing scripts"
-	# install speedtest
-	curl -sSL https://raw.githubusercontent.com/sivel/speedtest-cli/master/speedtest.py  > /usr/local/bin/speedtest
-	chmod +x /usr/local/bin/speedtest
-
-		# install lolcat
-	curl -sSL https://raw.githubusercontent.com/tehmaze/lolcat/master/lolcat > /usr/local/bin/lolcat
-	chmod +x /usr/local/bin/lolcat
 
     if [[ ! -d /home/$TARGET_USER/dotfiles ]]; then
 		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
 	
-    runuser -l $TARGET_USER -c 'cd ${HOME}/dotfiles && make scripts' 
-	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
+
+    cd ${HOME}/dotfiles && make scripts 
 
 }
 
@@ -335,8 +329,8 @@ install_dotfiles() {
         git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
 		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
     fi
-    runuser -l $TARGET_USER -c 'cd ${HOME}/dotfiles && make dotfiles'
-	chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER
+    cd ${HOME}/dotfiles && make dotfiles
+    
 }
 
 web3() {
@@ -462,7 +456,7 @@ main() {
 			;;
 			
 		"pyenv")
-			check_is_sudo
+			#check_is_sudo
 			install_pyenv
 			;;	
 		
@@ -472,7 +466,7 @@ main() {
 			;;
 		
 		"tmux")
-			check_is_sudo
+			#check_is_sudo
 			install_tmux
 			;;
 		
