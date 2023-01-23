@@ -467,6 +467,7 @@ main() {
 			;;
 			
 		"pyenv")
+            get_user
 			#check_is_sudo
 			install_pyenv
 			;;	
