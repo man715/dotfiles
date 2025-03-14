@@ -22,9 +22,9 @@ set ruler                   " show line and column number of the cursor on right
 """""Tab/indent settings
 set autoindent          " copy indent from current line when starting a new line
 set smartindent         " auto indents after '{'
-set softtabstop=2       " backsapcing after hitting tab will delete this many spaces
-set shiftwidth=2        " number of spaces to use for each step of (auto)indent
-set tabstop=2           " width that a <TAB> displays as
+set softtabstop=4       " backsapcing after hitting tab will delete this many spaces
+set shiftwidth=4        " number of spaces to use for each step of (auto)indent
+set tabstop=4           " width that a <TAB> displays as
 set expandtab           " convert <TAB> to spaces
 
 """"""Search settings
@@ -39,7 +39,7 @@ syntax on
 filetype on
 filetype plugin indent on
 
-colorscheme ron
+colorscheme delek
 
 " Plugins
 call plug#begin('~/.vim/plugged')
@@ -49,6 +49,7 @@ call plug#begin('~/.vim/plugged')
     Plug 'rwxrob/vim-pandoc-syntax-simple'
     Plug 'tmsvg/pear-tree'
     Plug 'cespare/vim-toml'
+    Plug 'rust-lang/rust.vim'
 call plug#end()
 
 " netrw Configs
@@ -121,3 +122,24 @@ if v:version >= 800
     set listchars=space:*,trail:*,nbsp:*,extends:>,precedes:<,tab:\|>
 endif
 
+augroup vimStartup
+    au!
+
+    " When editing a file, always jump to the last known cursor position.
+    " Don't do it when the position is invalid, when inside an event handler
+    " (happens when dropping a file on gvim) and for a commit message (it's
+    " likely a different one than last time).
+    autocmd BufReadPost *
+      \ if line("'\"") >= 1 && line("'\"") <= line("$") && &ft !~# 'commit'
+      \ |   exe "normal! g`\""
+      \ | endif
+
+augroup END
+
+" Set vim cursor style
+let &t_SI = "\e[6 q"
+let &t_EI = "\e[2 q"
+
+" Use F5 to turn on and off the column highligher at column 80
+nnoremap <silent> <F5> :execute "set colorcolumn="
+                  \ . (&colorcolumn == "" ? "80" : "")<CR>

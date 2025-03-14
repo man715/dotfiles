@@ -17,5 +17,21 @@ fi
 
 # Add go to $Path
 if [ -d "/usr/local/go/bin" ]; then
-    export PATH=/usr/local/go/bin:$PATH
+    export PATH=/usr/local/go/bin:$PATH:$HOME/go/bin
 fi
+
+# Add rust to $PATH
+if [ -d "$HOME/.cargo" ]; then
+    export PATH=$PATH:$HOME/.cargo/bin
+fi
+
+# Add /opt/bin to $PATH
+if [ -d "/opt/bin" ]; then
+    export PATH=$PATH:/opt/bin
+fi
+
+# Add pdtm to path
+if [ -d "$HOME/.pdtm" ]; then
+    export PATH=$PATH:$HOME/.pdtm/go/bin
+fi
+

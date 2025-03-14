@@ -1,6 +1,4 @@
-.env
-.gitconfig
-.gnupg
-!.gnupg/gpg*.conf
-Session.vim
 *.swp
+.config/nvim/lazy-lock.json
+.tmux/plugins/*
+.config/bat/*

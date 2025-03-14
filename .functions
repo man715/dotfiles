@@ -1,15 +1,330 @@
-# `o` with no arguments opens the current directory, otherwise opens the given
-# location
-o() {
-	if [ $# -eq 0 ]; then
-		xdg-open .	> /dev/null 2>&1
-	else
-		xdg-open "$@" > /dev/null 2>&1
-	fi
+#!/bin/bash
+
+function teamfiltration() {
+    # DESCRIPTION: Run TeamFiltration 
+    # ARGUMENT: DOMAIN 
+    # Example: teamfiltration convergetp.com
+    read -r DOMAIN <<<$(echo ${@});
+
+    TeamFiltration --config $HOME/tools/TeamFiltrationConfig.json --enum --validate-teams --outpath ./ --domain $DOMAIN;
+    return 0;
 }
 
-# Create a new directory and enter it
-mkd() {
-    mkdir "$@"
-    cd "$@" || exit
+function teamfiltrationusernames() {
+    # DESCRIPTION: Run TeamFiltration 
+    # ARGUMENT: DOMAIN USERNAMES
+    # Example: teamfiltration convergetp.com ./emails-list.txt
+    read -r DOMAIN USERNAMES <<<$(echo ${@});
+    TeamFiltration --config $HOME/tools/TeamFiltrationConfig.json --enum --validate-teams --outpath ./ --domain $DOMAIN --usernames $USERNAMES;
+    return 0;
+}
+
+function teamfiltrationdb() {
+    # DESCRIPTION: Open TeamFiltration Database
+    TeamFiltration --config $HOME/tools/TeamFiltrationConfig.json --database --outpath ./
+}
+
+function logAllBash(){
+    # DESCRIPTION: Logs all of bash input and output to HOME/date_time_xxxx_shell.log
+    [[ -d ${HOME}/LOGS ]] || mkdir "${HOME}/LOGS"
+    export BASH_LOG=${HOME}/LOGS/$(date +"%d-%b-%y_%H-%M-%S")_shell.log;
+    test "$(ps -o command= -p $PPID | awk '{print $1}')" == 'script' || (script -f ${BASH_LOG});
+}
+
+function mountSSHShare(){
+    # DESCRIPTION: Mount remote SSH share on share directory.
+    # ARGUMENT: mountSSHShare TUSER, TARGET, SHARE, PORT.
+    # Ex: mountSSHShare converge 172.29.249.147 share 2200
+    read -r TUSER TARGET SHARE PORT <<<$(echo ${@});
+    if [ $# -lt 3 ]; then
+        echo "[!] USAGE: mountSSHShare <user> <target> <share> [<port>]"
+        return -1
+    fi
+    mkdir -p share;
+    if [ -z "$PORT" ]; then
+        sshfs "${TUSER}@${TARGET}:./${SHARE}" ./share;
+    else
+        sshfs -p "${PORT}" "${TUSER}@${TARGET}:./${SHARE}" ./share;
+    fi
+    return 0;
+}
+
+function unmountSSHShare(){
+    # DESCRIPTION: Unmount remote SSH share from share directory.
+    fusermount -u ./share
+    return 0;
+}
+
+function uncolorFile() {
+    # DESCRIPTION: Remove color codes from file.
+    # ARGUMENTS: uncolorFile FILENAME
+    FILENAME="$1"
+    sed -i 's/\x1B\[[0-9;]*[a-zA-Z]//g' "$FILENAME"
+    return 0;
+}
+
+function startSshuttle(){
+    # DESCRIPTION: Start ssh tunnle.
+    # ARGUMENT: startSshuttle TUSER, TARGET, PORT, SUBNET, EXCLUSIONS.
+    # Ex: startSshuttle converge 172.29.249.111 2200 ./proxy-subnets.txt
+    # Ex: startSshuttle converge 172.29.249.111 2200 ./proxy-subnets.txt ./exclusions.txt
+    if [ $# -lt 4 ]; then
+        echo '[!] Usage: startSshuttle <user> <host> <port> <subnet file> [<exclusions file>]'
+        return -1
+    fi
+    read -r TUSER TARGET PORT SUBNET EXCLUSIONS <<<$(echo ${@});
+
+    if [ -z "$EXCLUSIONS" ]; then
+        sshuttle --dns -r "${TUSER}@${TARGET}:${PORT}" --subnets "${SUBNET}";
+    else
+        sshuttle --dns -r "${TUSER}@${TARGET}:${PORT}" --subnets "${SUBNET}" --exclude-from "${EXCLUSIONS}";
+    fi
+    return 0;
+}
+
+function changeUserPassword(){
+    # DESCRIPTION: Add a domain user to the domain.
+    # ARGUMENT: bloodyAddDomainUser TUSER TPASSWORD
+    read -r TUSER TPASSWORD <<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" change password "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" change password "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" change password "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" change password "${TUSER}" "${TPASSWORD}";
+    fi
+}
+
+function bloodyCommand(){
+    # DESCRIPTION: Run a bloody command authenticated.
+    # ARGUMENT: bloodyCommand COMMAND
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]]; then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" $@;
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" $@;
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" $@;
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" $@;
+    fi
+}
+
+function bloodyAddDomainUser(){
+    # DESCRIPTION: Add a domain user to the domain.
+    # ARGUMENT: bloodyAddDomainUser TUSER TPASSWORD
+    read -r TUSER TPASSWORD <<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" add user "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" add user "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" add user "${TUSER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" add user "${TUSER}" "${TPASSWORD}";
+    fi
+}
+
+function bloodyAddDomainComputer(){
+    # DESCRIPTION: Add a domain computer to the domain.
+    # ARGUMENT: bloodyAddDomainComputer TCOMPUTER TPASSWORD
+    read -r TCOMPUTER TPASSWORD <<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" add computer "${TCOMPUTER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" add computer "${TCOMPUTER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" add computer "${TCOMPUTER}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" add computer "${TCOMPUTER}" "${TPASSWORD}";
+    fi
+}
+
+function bloodyAddGroupMember(){
+    # DESCRIPTION: Add an object to a group.
+    # ARGUMENT: bloodyAddGroupMember TGROUP TOBJECT
+    read -r TGROUP TOBJECT <<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" add groupMember "${TGROUP}" "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" add groupMember "${TGROUP}" "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" add groupMember "${TGROUP}" "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" add groupMember "${TGROUP}" "${TOBJECT}";
+    fi
+}
+
+function bloodyRemoveObject(){
+    # DESCRIPTION: Remove an object.
+    # ARGUMENT: bloodyAddGroupMember TOBJECT
+    read -r TOBJECT <<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" remove object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p "${HASHES}" -d "${DOMAIN,,}" --host "${DCIP}" remove object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" remove object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" remove object "${TOBJECT}";
+    fi
+}
+
+function bloodySetPassword() {
+    # DESCRIPTION: Sets a password on an object.
+    # ARGUMENT: bloodySetPassword TOBJECT TPASSWORD
+    read -r TOBJECT TPASSWORD<<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" set password "${TOBJECT}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p ":${HASH}" -d "${DOMAIN,,}" --host "${DCIP}" set password "${TOBJECT}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" set password "${TOBJECT}" "${TPASSWORD}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" set password "${TOBJECT}" "${TPASSWORD}";
+    fi
+}
+
+function bloodyGetUser() {
+    # DESCRIPTION: Sets a password on an object.
+    # ARGUMENT: bloodyGetUser TOBJECT
+    read -r TOBJECT TPASSWORD<<<$(echo ${@});
+    if [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PASS" ]];
+    then
+        bloodyAD -u "${USER,,}" -p "${PASSWORD}" -d "${DOMAIN,,}" --host "${DCIP}" get object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTH" ]]; then
+        bloodyAD -u "${USER,,}" -p ":${HASH}" -d "${DOMAIN,,}" --host "${DCIP}" get object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PTT" ]]; then
+        bloodyAD -u "${USER,,}" -k -d "${DOMAIN,,}" --host "${DCIP}" get object "${TOBJECT}";
+    elif [[ "$AUTHMETHOD" =~ "$AUTHMETHOD_PFX" ]]; then
+        bloodyAD -u "${USER,,}" -c "${PFXFILE}" -d "${DOMAIN,,}" --host "${DCIP}" get object "${TOBJECT}";
+    fi
+}
+
+function updateMantis() {
+  if [[ $# -lt 1 ]]; then
+      echo "[!] usage updateMantis <IP>"
+      return 1
+  fi
+  export MANTIS=$1
+  sed -i "s/MANTIS=.*/MANTIS=$1/" ~/.exports
+  if [[ $? -eq 0 ]]; then
+      echo "[i] MANTIS variable updated to $1"
+  fi
+}
+
+function setupAssessment() {
+    read -p "Enter MANTIS IP: " MANTIS
+    sed -i "s/MANTIS=.*/MANTIS=$MANTIS/" ~/.exports
+    mkdir "$HOME/.target-user"
+    mkdir "$HOME/.target-user/ccache"
+    mkdir "$HOME/.target-user/pfx"
+    file="$HOME/.target-user/user-template"
+    echo "export DOMAIN=" >> "$file"
+    echo "export DCFQDN=" >> "$file"
+    echo "export DCIP=" >>  "$file"
+    echo "export USERNAME=" >> "$file"
+    echo "export NT=" >> "$file"
+    echo "export PASSWORD=" >> "$file"
+    echo "export KRB5CCNAME=" >> "$file"
+    echo "export PFX=" >> "$file"
+    echo "export LOOTDIR=" >> "$file"
+    echo "export AUTHMETHOD=" >> "$file"
+    exec bash
+    return 0
+}
+
+function createUser() {
+    source $HOME/.target-user/user-template
+    read -p "DOMAIN: " DOMAIN
+    read -p "Username: " USERNAME
+    read -p "NT Hash: " NT
+    read -p "Password: " PASSWORD
+    read -p "KRB5CCNAME: " KRB4CNAME
+    read -p "PFX: " PFX
+    read -p "Authentication Method (PTH, PTT, PASS, PFX): " METHOD
+    AUTHMETHOD=$(echo $METHOD | tr '[:lower:]' '[:upper:]')
+    LOOTDIR="$HOME/data/$USERNAME/loot"
+    mkdir "$HOME/data/$USERNAME"
+    mkdir "$LOOTDIR"
+    exportUser
+    return 0
+}
+
+function exportUser() {
+    file="$HOME/.target-user/$USERNAME"
+    echo "[*] Exporting user information to $file"
+    if [[ -f "$file" ]]; then
+        rm "$file"
+    fi
+    touch "$file"
+    echo "export DOMAIN=$DOMAIN" >> "$file"
+    echo "export USERNAME=$USERNAME" >> "$file"
+    echo "export NT=$NT" >> "$file"
+    echo "export PASSWORD=$PASSWORD" >> "$file"
+    echo "export KRB5CCNAME=$KRB5CCNAME" >> "$file"
+    echo "export PFX=$PFX" >> "$file"
+    echo "export LOOTDIR=$LOOTDIR" >> "$file"
+    echo "export AUTHMETHOD=$AUTHMETHOD" >> "$file"
+    return 0
+}
+
+function loadUser() {
+    if [ $# -ne 1 ]; then
+        read -p "Username: " USERNAME
+    else
+        USERNAME=$1
+    fi
+    file="$HOME/.target-user/$USERNAME"
+    if [ -f $file ]; then
+        source $file 
+    else
+        echo "[!] A user file does not exist for $USERNAME"
+    fi
+    return 0
+}
+
+function currentUser() {
+    echo "DOMAIN=$DOMAIN"
+    echo "USERNAME=$USERNAME"
+    echo "NT=$NT"
+    echo "PASSWORD=$PASSWORD"
+    echo "KRB5CCNAME=$KRB5CCNAME"
+    echo "PFX=$PFX"
+    echo "LOOTDIR=$LOOTDIR"
+    echo "AUTHMETHOD=$AUTHMETHOD"
+    return 0
+}
+
+function updateMantis () 
+{ 
+    if [[ $# -lt 1 ]]; then
+        echo "[!] usage updateMantis <IP>";
+        return 1;
+    fi;
+    export MANTIS=$1;
+    sed -i "s/MANTIS=.*/MANTIS=$1/" ~/.exports;
+    if [[ $? -eq 0 ]]; then
+        echo "[i] MANTIS variable updated to $1";
+    fi
+}
+
+function importOpenVpnConfig ()
+{
+    if [[ $# -lt 2 ]]; then
+        echo "[!] usage importOpenVpnConfig <CONFIG> <CONFIG NAME>"
+    fi
+    openvpn3 config-import -c $1 -n $2 -p
+}
+
+function setupIDF ()
+{
+    . ~/esp/esp-idf/export.sh
 }
