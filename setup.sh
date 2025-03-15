@@ -124,7 +124,6 @@ base() {
 		bridge-utils \
 		bzip2 \
 		ca-certificates \
-		cgroupfs-mount \
 		containerd.io \
 		coreutils \
 		curl \
@@ -134,7 +133,7 @@ base() {
 		docker-compose-plugin \
 		file \
 		findutils \
-        flameshot \
+                flameshot \
 		fwupd \
 		fwupdate \
 		gcc \
@@ -152,7 +151,6 @@ base() {
 		less \
 		libapparmor-dev \
 		libc6-dev \
-		libimobiledevice6 \
 		libltdl-dev \
 		libpam-systemd \
 		libpcsclite-dev \
@@ -165,10 +163,6 @@ base() {
 		net-tools \
 		pcscd \
 		pinentry-curses \
-		policykit-1 \
-        pulseaudio \
-        pulseaudio-module-bluetooth \
-        pulsemixer \
 		python3 \
 		python3-pip \
 		scdaemon \
@@ -178,12 +172,11 @@ base() {
 		sudo \
 		systemd \
 		tar \
-        timeshift \
 		tree \
 		tzdata \
 		unzip \
 		vim \
-        xclip \
+                xclip \
 		zip --no-install-recommends
 
 	apt autoremove -y
@@ -193,13 +186,6 @@ base() {
     git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
     ~/.fzf/install
 
-	setup_sudo
-
-	# Create a symlinc for python
-	if [[ ! -d /usr/bin/python ]]; then
-		sudo ln -s /usr/bin/python3 /usr/bin/python
-	fi
-	
 	# create apt sandbox user
 	if [[ ! $(id -u $TARGET_USER) ]]; then
 		echo "[!] Creating the apt sandbox user _apt"
@@ -213,16 +199,7 @@ base() {
 # install custom scripts/binaries
 install_scripts() {
     get_user
-	echo "[*] Installing scripts"
-
-    if [[ ! -d /home/$TARGET_USER/dotfiles ]]; then
-		git clone git@github.com:man715/dotfiles.git /home/$TARGET_USER/dotfiles
-		chown -R $TARGET_USER:$TARGET_USER /home/$TARGET_USER/dotfiles
-    fi
 	
-
-    cd ${HOME}/dotfiles && make scripts 
-
 }
 
 # Setup sudo for a user
