@@ -26,10 +26,6 @@ alias .....='cd ../../../..'
 alias ......='cd ../../../../..'
 alias c='clear'
 
-alias connectVPN='openvpn3 session-start -c mantis'
-alias disconnectVPN='openvpn3 session-manage -D -c mantis'
-alias bloodhound='curl -L https://ghst.ly/getbhce | docker compose -f - up'
-
 if [ $(command -v nvim) ]; then
     alias vim=$(command -v nvim)
 fi
@@ -37,3 +33,4 @@ fi
 if [ $(command -v batcat) ]; then
     alias cat=$(command -v batcat)
 fi
+alias get_rusty='. "$HOME/.cargo/env"'

@@ -196,6 +196,12 @@ base() {
 	install_dotfiles
 }
 
+install_ghostty() {
+	echo "[I] Installing Ghostty"
+	wget https://github.com/mkasberg/ghostty-ubuntu/releases/download/1.1.3-0-ppa1/ghostty_1.1.3-0.ppa1_amd64_22.04.deb
+	sudo dpkg -i ./ghostty_1.1.3-0.ppa1_amd64_22.04.deb
+}
+
 # install custom scripts/binaries
 install_scripts() {
     get_user

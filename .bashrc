@@ -93,3 +93,4 @@ done
 # [ -f ${HOME}/.config/user-dirs.dirs ] && source ${HOME}/.config/user-dirs.dirs
 
 bind -x '"\C-l":'
+. "$HOME/.cargo/env"
